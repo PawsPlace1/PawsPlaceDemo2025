@@ -7,7 +7,7 @@
 
 import React from 'react'
 
-const ListingCard = ({ listing }) => {
+const ListingCard = ({ listing, onEnquire }) => {
   // Format the rent display
   const formatRent = (rent) => {
     return `£${rent?.toLocaleString() || 'TBC'}`
@@ -94,6 +94,16 @@ const ListingCard = ({ listing }) => {
           {listing.PetParkingCosts > 0 && (
             <span className="pet-friendly-indicator">🐾 Pet-Friendly</span>
           )}
+        </div>
+        
+        {/* Enquire Button */}
+        <div className="listing-actions">
+          <button 
+            className="enquire-btn"
+            onClick={() => onEnquire && onEnquire(listing)}
+          >
+            Enquire About This Property
+          </button>
         </div>
       </div>
     </div>
