@@ -1,6 +1,6 @@
-# PawsPlaceDemo2025
+# PawsPlace - Pet-Friendly London Rentals
 
-Welcome to PawsPlace!  
+Welcome to PawsPlace! 🐾  
 We started this project as pet owners who struggled to find pet-friendly places to rent in London. Our goal: bring together pet owners and pet-friendly landlords to make the process easier and less stressful for everyone.
 
 ## 🚀 Quick Start
@@ -9,28 +9,109 @@ We started this project as pet owners who struggled to find pet-friendly places 
    ```bash
    npm install
    ```
-2. **Run locally:**
+
+2. **Set up environment variables:**
+   ```bash
+   cp .env.local.example .env.local
+   ```
+   Then edit `.env.local` with your Supabase credentials.
+
+3. **Run locally:**
    ```bash
    npm run dev
    ```
-   Then open [http://localhost:5173](http://localhost:5173) in your browser.
+   Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-## 🐾 Project Structure
+## 🏗️ Project Structure
 
-- `/src` – React source code
-- `/public/logo.png` – Your site logo (replace with your own!)
-- `/README.md` – This guide
+This is a **Next.js** application with the following structure:
 
-## 🌟 Next Steps
+- `/pages` – Next.js pages (routes)
+  - `/pages/index.js` – Homepage with listings, search, and filters
+  - `/pages/_app.js` – Global app configuration
+- `/components` – Reusable React components
+  - `ListingCard.js` – Individual property card display
+  - `SearchBar.js` – Location search functionality
+  - `Filters.js` – Property filtering and sorting
+- `/lib` – Utility libraries
+  - `supabase.js` – Database client and API functions
+- `/styles` – CSS styling
+  - `globals.css` – Global styles and responsive design
+- `/public` – Static assets
+  - `logo.png` – PawsPlace logo
 
-- Edit `src/App.jsx` to update your welcome message or add features.
-- Replace `public/logo.png` with your real logo.
+## 🗄️ Database Setup
 
-## 📦 Build for production
+Create a Supabase table named `listings` with these columns:
+
+| Column | Type | Description |
+|--------|------|-------------|
+| Title | text | Property title |
+| Rent | integer | Monthly rent in pounds |
+| Listed | timestamp | When property was listed |
+| Bedrooms | integer | Number of bedrooms |
+| Baths | integer | Number of bathrooms |
+| Location | text | Area/postcode |
+| Description | text | Property description |
+| Furnished | boolean | Furnished status |
+| Garden | boolean | Has garden/outdoor space |
+| SquareFootage | integer | Property size in sq ft |
+| PetParkingCosts | integer | Extra pet parking costs |
+| StairFreeAccess | boolean | Stair-free access available |
+| HouseShare | boolean | Is a house share |
+
+## 🌟 Features
+
+- **Search & Filter**: Find properties by location, type, and features
+- **Pet-Friendly Focus**: Highlight properties with pet amenities
+- **Responsive Design**: Works on desktop, tablet, and mobile
+- **Sorting Options**: Sort by price, date, bedrooms
+- **Modern UI**: Clean, accessible design with loading states
+
+## 🚀 Deployment
+
+### Vercel (Recommended)
+
+1. Connect your GitHub repo to Vercel
+2. Add environment variables in Vercel dashboard:
+   - `NEXT_PUBLIC_SUPABASE_URL`
+   - `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+3. Deploy automatically on push to main branch
+
+### Manual Build
 
 ```bash
 npm run build
+npm start
 ```
+
+## 🔮 Future Enhancements
+
+This starter is ready for extension with:
+
+- **Authentication**: Agent/tenant login system
+- **Property Management**: Add/edit listings dashboard
+- **Notifications**: Email alerts for new properties
+- **Messaging**: Contact between tenants and agents
+- **Favorites**: Save preferred properties
+- **Advanced Filters**: Price range, pet size restrictions
+- **Map Integration**: Location-based search
+- **Photo Uploads**: Property image management
+
+## 🛠️ Development
+
+- **Linting**: `npm run lint`
+- **Type Checking**: Ready for TypeScript conversion
+- **Component Testing**: Jest/React Testing Library ready
+- **API Routes**: Add `/pages/api` for backend functionality
+
+## 📝 Code Style
+
+- Clean, commented code for beginner maintainers
+- Consistent naming conventions
+- Responsive CSS with modern techniques
+- Accessible UI components
+- Error handling and loading states
 
 ---
 
