@@ -8,10 +8,11 @@
 import React, { useState, useEffect } from 'react'
 import Head from 'next/head'
 import Image from 'next/image'
-import { fetchListings, searchListingsByLocation } from '../lib/supabase'
+import { fetchListings, searchListingsByLocation, submitEnquiry } from '../lib/supabase'
 import ListingCard from '../components/ListingCard'
 import SearchBar from '../components/SearchBar'
 import Filters from '../components/Filters'
+import EnquiryModal from '../components/EnquiryModal'
 
 export default function Home() {
   // State management
@@ -22,6 +23,13 @@ export default function Home() {
   const [propertyType, setPropertyType] = useState('')
   const [sortBy, setSortBy] = useState('newest')
   const [showPetFriendlyOnly, setShowPetFriendlyOnly] = useState(false)
+  
+  // Enquiry modal state
+  const [enquiryModal, setEnquiryModal] = useState({
+    isOpen: false,
+    listing: null
+  })
+  const [enquirySubmitted, setEnquirySubmitted] = useState(false)
 
   // Load initial listings on component mount
   useEffect(() => {
@@ -135,6 +143,51 @@ export default function Home() {
     setFilteredListings(filtered)
   }
 
+  /**
+   * Handle opening enquiry modal for a specific listing
+   */
+  const handleEnquire = (listing) => {
+    setEnquiryModal({
+      isOpen: true,
+      listing: listing
+    })
+  }
+
+  /**
+   * Handle closing enquiry modal
+   */
+  const handleCloseEnquiry = () => {
+    setEnquiryModal({
+      isOpen: false,
+      listing: null
+    })
+    // Clear the submission confirmation after a short delay
+    if (enquirySubmitted) {
+      setTimeout(() => {
+        setEnquirySubmitted(false)
+      }, 3000)
+    }
+  }
+
+  /**
+   * Handle enquiry form submission
+   */
+  const handleEnquirySubmit = async (enquiryData) => {
+    try {
+      const result = await submitEnquiry(enquiryData)
+      
+      if (result.success) {
+        setEnquirySubmitted(true)
+        console.log('✅ Enquiry submitted successfully:', result.message)
+      } else {
+        throw new Error('Failed to submit enquiry')
+      }
+    } catch (error) {
+      console.error('Error submitting enquiry:', error)
+      throw error // Re-throw to let the modal handle the error
+    }
+  }
+
   return (
     <>
       <Head>
@@ -232,12 +285,33 @@ export default function Home() {
           {!loading && filteredListings.length > 0 && (
             <div className="listings-grid">
               {filteredListings.map((listing, index) => (
-                <ListingCard key={listing.id || index} listing={listing} />
+                <ListingCard 
+                  key={listing.id || index} 
+                  listing={listing} 
+                  onEnquire={handleEnquire}
+                />
               ))}
             </div>
           )}
         </div>
       </main>
+
+      {/* Enquiry Success Message */}
+      {enquirySubmitted && (
+        <div className="enquiry-success-banner">
+          <div className="container">
+            <p>✅ Your enquiry has been submitted successfully! We&apos;ll be in touch soon.</p>
+          </div>
+        </div>
+      )}
+
+      {/* Enquiry Modal */}
+      <EnquiryModal
+        listing={enquiryModal.listing}
+        isOpen={enquiryModal.isOpen}
+        onClose={handleCloseEnquiry}
+        onSubmit={handleEnquirySubmit}
+      />
 
       {/* Footer */}
       <footer style={{ 
