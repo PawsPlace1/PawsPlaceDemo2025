@@ -104,7 +104,7 @@ export default function Home() {
     // Apply pet-friendly filter
     if (showPetFriendlyOnly) {
       filtered = filtered.filter(listing => 
-        listing.PetParkingCosts > 0 || 
+        listing.Parking === true || 
         listing.Garden === true ||
         listing.Description?.toLowerCase().includes('pet') ||
         listing.Description?.toLowerCase().includes('dog') ||

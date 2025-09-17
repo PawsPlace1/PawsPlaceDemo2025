@@ -32,8 +32,8 @@ const ListingCard = ({ listing }) => {
     if (listing.Garden) features.push('Garden/Outdoor Space')
     if (listing.StairFreeAccess) features.push('Stair-Free Access')
     if (listing.HouseShare) features.push('House Share')
-    if (listing.PetParkingCosts && listing.PetParkingCosts > 0) {
-      features.push(`Pet Parking: £${listing.PetParkingCosts}`)
+    if (listing.Parking) {
+      features.push('Parking available')
     }
     
     return features
@@ -80,7 +80,7 @@ const ListingCard = ({ listing }) => {
             {features.map((feature, index) => (
               <span 
                 key={index} 
-                className={`feature-tag ${feature.includes('Garden') || feature.includes('Pet') ? 'pet-friendly-tag' : ''}`}
+                className={`feature-tag ${feature.includes('Garden') || feature.includes('Parking') ? 'pet-friendly-tag' : ''}`}
               >
                 {feature}
               </span>
@@ -91,7 +91,10 @@ const ListingCard = ({ listing }) => {
         {/* Meta Information */}
         <div className="listing-meta">
           <span>Listed: {formatDate(listing.Listed)}</span>
-          {listing.PetParkingCosts > 0 && (
+          {(listing.Parking || listing.Garden || 
+            listing.Description?.toLowerCase().includes('pet') ||
+            listing.Description?.toLowerCase().includes('dog') ||
+            listing.Description?.toLowerCase().includes('cat')) && (
             <span className="pet-friendly-indicator">🐾 Pet-Friendly</span>
           )}
         </div>

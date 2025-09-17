@@ -56,7 +56,7 @@ Create a Supabase table named `listings` with these columns:
 | Furnished | boolean | Furnished status |
 | Garden | boolean | Has garden/outdoor space |
 | SquareFootage | integer | Property size in sq ft |
-| PetParkingCosts | integer | Extra pet parking costs |
+| Parking | boolean | Parking availability |
 | StairFreeAccess | boolean | Stair-free access available |
 | HouseShare | boolean | Is a house share |
 
