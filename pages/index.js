@@ -8,12 +8,17 @@
 import React, { useState, useEffect } from 'react'
 import Head from 'next/head'
 import Image from 'next/image'
-import { fetchListings, searchListingsByLocation } from '../lib/supabase'
+import Link from 'next/link'
+import { fetchListings, searchListingsByLocation, signOutUser } from '../lib/supabase'
+import { useAuth } from '../lib/AuthContext'
 import ListingCard from '../components/ListingCard'
 import SearchBar from '../components/SearchBar'
 import Filters from '../components/Filters'
 
 export default function Home() {
+  // Authentication state
+  const { user, role, isAuthenticated, loading: authLoading, updateAuthState } = useAuth()
+  
   // State management
   const [listings, setListings] = useState([])
   const [filteredListings, setFilteredListings] = useState([])
@@ -135,6 +140,24 @@ export default function Home() {
     setFilteredListings(filtered)
   }
 
+  /**
+   * Handle user logout
+   */
+  const handleLogout = async () => {
+    try {
+      const { error, mockMode } = await signOutUser()
+      if (mockMode) {
+        // Update auth state manually for mock mode
+        updateAuthState(null, null)
+      }
+      if (error) {
+        console.error('Error signing out:', error)
+      }
+    } catch (error) {
+      console.error('Error signing out:', error)
+    }
+  }
+
   return (
     <>
       <Head>
@@ -162,8 +185,36 @@ export default function Home() {
               />
               <div className="brand-text">PawsPlace</div>
             </div>
-            <div style={{ color: '#666', fontSize: '16px', textAlign: 'center' }}>
-              Pet-friendly rentals in London 🐾
+            <div className="header-center">
+              <div style={{ color: '#666', fontSize: '16px', textAlign: 'center' }}>
+                Pet-friendly rentals in London 🐾
+              </div>
+            </div>
+            <div className="header-auth">
+              {authLoading ? (
+                <div className="auth-loading">Loading...</div>
+              ) : isAuthenticated ? (
+                <div className="user-menu">
+                  <span className="user-info">
+                    {user?.email} {role && `(${role})`}
+                  </span>
+                  <button 
+                    onClick={handleLogout}
+                    className="logout-button"
+                  >
+                    Logout
+                  </button>
+                </div>
+              ) : (
+                <div className="auth-buttons">
+                  <Link href="/login" className="auth-link">
+                    Login
+                  </Link>
+                  <Link href="/signup" className="auth-link signup">
+                    Sign Up
+                  </Link>
+                </div>
+              )}
             </div>
           </div>
         </div>
