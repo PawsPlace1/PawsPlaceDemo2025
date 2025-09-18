@@ -8,12 +8,16 @@
 import React, { useState, useEffect } from 'react'
 import Head from 'next/head'
 import Image from 'next/image'
+import Link from 'next/link'
 import { fetchListings, searchListingsByLocation } from '../lib/supabase'
+import { useAuth } from '../contexts/AuthContext'
 import ListingCard from '../components/ListingCard'
 import SearchBar from '../components/SearchBar'
 import Filters from '../components/Filters'
 
 export default function Home() {
+  const { user, profile, signOut, isAuthenticated, loading: authLoading } = useAuth()
+  
   // State management
   const [listings, setListings] = useState([])
   const [filteredListings, setFilteredListings] = useState([])
@@ -162,8 +166,87 @@ export default function Home() {
               />
               <div className="brand-text">PawsPlace</div>
             </div>
-            <div style={{ color: '#666', fontSize: '16px', textAlign: 'center' }}>
-              Pet-friendly rentals in London 🐾
+            <div style={{ 
+              display: 'flex', 
+              alignItems: 'center', 
+              gap: '2rem',
+              flexWrap: 'wrap',
+              justifyContent: 'center'
+            }}>
+              <div style={{ color: '#666', fontSize: '16px', textAlign: 'center' }}>
+                Pet-friendly rentals in London 🐾
+              </div>
+              <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+                {authLoading ? (
+                  <div style={{ color: '#666', fontSize: '14px' }}>Loading...</div>
+                ) : isAuthenticated ? (
+                  <>
+                    <span style={{ 
+                      color: '#2d5a2d', 
+                      fontSize: '14px',
+                      fontWeight: '500'
+                    }}>
+                      Welcome, {profile?.first_name || user?.email?.split('@')[0]}
+                      {profile?.role && (
+                        <span style={{ 
+                          color: '#666', 
+                          fontSize: '12px',
+                          marginLeft: '4px'
+                        }}>
+                          ({profile.role})
+                        </span>
+                      )}
+                    </span>
+                    <button
+                      onClick={signOut}
+                      style={{
+                        padding: '0.5rem 1rem',
+                        backgroundColor: 'transparent',
+                        color: '#2d5a2d',
+                        border: '1px solid #2d5a2d',
+                        borderRadius: '4px',
+                        fontSize: '14px',
+                        cursor: 'pointer'
+                      }}
+                    >
+                      Sign Out
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <Link 
+                      href="/auth/login"
+                      style={{
+                        padding: '0.5rem 1rem',
+                        backgroundColor: 'transparent',
+                        color: '#2d5a2d',
+                        border: '1px solid #2d5a2d',
+                        borderRadius: '4px',
+                        fontSize: '14px',
+                        textDecoration: 'none',
+                        display: 'inline-block'
+                      }}
+                    >
+                      Sign In
+                    </Link>
+                    <Link 
+                      href="/auth/signup"
+                      style={{
+                        padding: '0.5rem 1rem',
+                        backgroundColor: '#2d5a2d',
+                        color: 'white',
+                        border: 'none',
+                        borderRadius: '4px',
+                        fontSize: '14px',
+                        textDecoration: 'none',
+                        display: 'inline-block'
+                      }}
+                    >
+                      Join as Agent
+                    </Link>
+                  </>
+                )}
+              </div>
             </div>
           </div>
         </div>

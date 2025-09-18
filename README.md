@@ -28,11 +28,16 @@ This is a **Next.js** application with the following structure:
 
 - `/pages` – Next.js pages (routes)
   - `/pages/index.js` – Homepage with listings, search, and filters
-  - `/pages/_app.js` – Global app configuration
+  - `/pages/_app.js` – Global app configuration with authentication context
+  - `/pages/auth/` – Authentication pages
+    - `signup.js` – Agent registration form
+    - `login.js` – User login form
 - `/components` – Reusable React components
   - `ListingCard.js` – Individual property card display
   - `SearchBar.js` – Location search functionality
   - `Filters.js` – Property filtering and sorting
+- `/contexts` – React contexts
+  - `AuthContext.js` – Authentication state management
 - `/lib` – Utility libraries
   - `supabase.js` – Database client and API functions
 - `/styles` – CSS styling
@@ -42,6 +47,7 @@ This is a **Next.js** application with the following structure:
 
 ## 🗄️ Database Setup
 
+### Listings Table
 Create a Supabase table named `listings` with these columns:
 
 | Column | Type | Description |
@@ -60,6 +66,23 @@ Create a Supabase table named `listings` with these columns:
 | StairFreeAccess | boolean | Stair-free access available |
 | HouseShare | boolean | Is a house share |
 
+### User Profiles Table (Authentication)
+Create a Supabase table named `profiles` with these columns:
+
+| Column | Type | Description |
+|--------|------|-------------|
+| id | uuid | Primary key (matches auth.users.id) |
+| email | text | User's email address |
+| role | text | User role: 'admin', 'agent', or 'tenant' |
+| first_name | text | User's first name |
+| last_name | text | User's last name |
+| full_name | text | Full name for display |
+| agency | text | Agency name (for agents) |
+| phone | text | Phone number |
+| created_at | timestamp | Account creation timestamp |
+
+**Important**: Enable Row Level Security (RLS) on the profiles table and create appropriate policies for user data access.
+
 ## 🌟 Features
 
 - **Search & Filter**: Find properties by location, type, and features
@@ -67,6 +90,8 @@ Create a Supabase table named `listings` with these columns:
 - **Responsive Design**: Works on desktop, tablet, and mobile
 - **Sorting Options**: Sort by price, date, bedrooms
 - **Modern UI**: Clean, accessible design with loading states
+- **Authentication**: Agent sign-up and login system with role-based access
+- **User Profiles**: Secure user data management with Supabase Auth
 
 ## 🚀 Deployment
 
@@ -89,14 +114,15 @@ npm start
 
 This starter is ready for extension with:
 
-- **Authentication**: Agent/tenant login system
-- **Property Management**: Add/edit listings dashboard
+- **Advanced Authentication**: Tenant login, password reset, email verification
+- **Property Management**: Add/edit listings dashboard for agents
 - **Notifications**: Email alerts for new properties
 - **Messaging**: Contact between tenants and agents
 - **Favorites**: Save preferred properties
 - **Advanced Filters**: Price range, pet size restrictions
 - **Map Integration**: Location-based search
 - **Photo Uploads**: Property image management
+- **Admin Dashboard**: User management and system administration
 
 ## 🛠️ Development
 
