@@ -8,12 +8,16 @@
 import React, { useState, useEffect } from 'react'
 import Head from 'next/head'
 import Image from 'next/image'
+import Link from 'next/link'
 import { fetchListings, searchListingsByLocation } from '../lib/supabase'
 import ListingCard from '../components/ListingCard'
 import SearchBar from '../components/SearchBar'
 import Filters from '../components/Filters'
+import { useAuth } from '../contexts/AuthContext'
 
 export default function Home() {
+  const { isAuthenticated, profile, logout, loading: authLoading } = useAuth()
+  
   // State management
   const [listings, setListings] = useState([])
   const [filteredListings, setFilteredListings] = useState([])
@@ -164,6 +168,84 @@ export default function Home() {
             </div>
             <div style={{ color: '#666', fontSize: '16px', textAlign: 'center' }}>
               Pet-friendly rentals in London 🐾
+            </div>
+            
+            {/* Authentication Section */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
+              {authLoading ? (
+                <div style={{ color: '#666', fontSize: '14px' }}>Loading...</div>
+              ) : isAuthenticated ? (
+                <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
+                  <div style={{ fontSize: '14px', color: '#666' }}>
+                    Welcome, {profile?.name || 'Agent'}!
+                    {profile?.role && (
+                      <span style={{ 
+                        background: '#2563eb', 
+                        color: 'white', 
+                        padding: '2px 8px', 
+                        borderRadius: '12px', 
+                        fontSize: '12px', 
+                        marginLeft: '8px',
+                        textTransform: 'capitalize'
+                      }}>
+                        {profile.role}
+                      </span>
+                    )}
+                  </div>
+                  <button
+                    onClick={logout}
+                    style={{
+                      background: 'none',
+                      border: '1px solid #ddd',
+                      color: '#666',
+                      padding: '6px 12px',
+                      borderRadius: '4px',
+                      fontSize: '14px',
+                      cursor: 'pointer',
+                      transition: 'all 0.2s'
+                    }}
+                    onMouseOver={(e) => {
+                      e.target.style.background = '#f5f5f5'
+                    }}
+                    onMouseOut={(e) => {
+                      e.target.style.background = 'none'
+                    }}
+                  >
+                    Logout
+                  </button>
+                </div>
+              ) : (
+                <div style={{ display: 'flex', gap: '10px' }}>
+                  <Link
+                    href="/agent/login"
+                    style={{
+                      color: '#2563eb',
+                      textDecoration: 'none',
+                      padding: '8px 16px',
+                      border: '1px solid #2563eb',
+                      borderRadius: '4px',
+                      fontSize: '14px',
+                      transition: 'all 0.2s'
+                    }}
+                  >
+                    Agent Login
+                  </Link>
+                  <Link
+                    href="/agent/signup"
+                    style={{
+                      background: '#2563eb',
+                      color: 'white',
+                      textDecoration: 'none',
+                      padding: '8px 16px',
+                      borderRadius: '4px',
+                      fontSize: '14px',
+                      transition: 'all 0.2s'
+                    }}
+                  >
+                    Join as Agent
+                  </Link>
+                </div>
+              )}
             </div>
           </div>
         </div>
